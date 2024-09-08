@@ -33,16 +33,22 @@ BusScheduleManager& BusScheduleManager::operator=(const BusScheduleManager& othe
 // Resize the array of schedules
 void BusScheduleManager::Resize() {
     capacity_ *= 2;
+
     BusSchedule** new_schedules = new BusSchedule*[capacity_];
+
     for (int i = 0; i < size_; ++i) {
         new_schedules[i] = schedules_[i];
     }
+
     for (int i = size_; i < capacity_; ++i) {
         new_schedules[i] = nullptr;
     }
+
     delete[] schedules_;
+
     schedules_ = new_schedules;
 }
+
 
 // Copy resources from another BusScheduleManager
 void BusScheduleManager::CopyFrom(const BusScheduleManager& other) {
@@ -65,14 +71,15 @@ void BusScheduleManager::Clear() {
     delete[] schedules_;
 }
 
-// Add a new schedule
 void BusScheduleManager::AddSchedule() {
     if (size_ == capacity_) {
         Resize();
     }
 
     schedules_[size_] = new BusSchedule();
+
     schedules_[size_]->AddSchedule();
+
     ++size_;
 }
 

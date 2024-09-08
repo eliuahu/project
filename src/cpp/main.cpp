@@ -17,6 +17,7 @@ int main() {
     BusScheduleManager manager;
     int choice;
     int index;
+    int scheduleCount = 0;
 
     while (true) {
         DisplayMenu();
@@ -26,13 +27,13 @@ int main() {
         switch (choice) {
             case 1:
                 manager.AddSchedule();
+                scheduleCount++;
                 break;
             case 2:
                 manager.DisplaySchedules();
                 break;
             case 3:
                 {
-                    auto scheduleCount = manager.GetScheduleCount(); // Use a local variable to store the count
                     if (scheduleCount == 0) {
                         std::cout << "No schedules available to update.\n";
                         break;
@@ -51,7 +52,6 @@ int main() {
                 break;
             case 4:
                 {
-                    auto scheduleCount = manager.GetScheduleCount(); // Use a local variable to store the count
                     if (scheduleCount == 0) {
                         std::cout << "No schedules available to delete.\n";
                         break;
@@ -63,6 +63,7 @@ int main() {
 
                     if (index >= 0 && index < scheduleCount) {
                         manager.DeleteSchedule(index);
+                        scheduleCount--;
                     } else {
                         std::cout << "Invalid index! Please try again.\n";
                     }
