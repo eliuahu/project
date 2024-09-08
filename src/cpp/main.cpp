@@ -1,13 +1,8 @@
 #include "bus_schedule_manager.h"
 #include <iostream>
-#include <limits> 
+#include <limits>
 
-
-int main() {
-  BusScheduleManager manager;
-  int choice;
-
-  while (true) {
+void DisplayMenu() {
     std::cout << "\n\n\n";
     std::cout << "Bus Schedule Management System\n";
     std::cout << "1. Add new schedule\n";
@@ -16,27 +11,68 @@ int main() {
     std::cout << "4. Delete schedule\n";
     std::cout << "5. Exit\n";
     std::cout << "Enter your choice: ";
-    std::cin >> choice;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // Clear input buffer
+}
 
-    switch (choice) {
-      case 1:
-        manager.AddSchedule();
-        break;
-      case 2:
-        manager.DisplaySchedules();
-        break;
-      case 3:
-        manager.UpdateSchedule();
-        break;
-      case 4:
-        manager.DeleteSchedule();
-        break;
-      case 5:
-        std::cout << "Exiting...\n";
-        return 0;
-      default:
-        std::cout << "Invalid choice! Please try again.\n";
+int main() {
+    BusScheduleManager manager;
+    int choice;
+    int index;
+
+    while (true) {
+        DisplayMenu();
+        std::cin >> choice;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // Clear input buffer
+
+        switch (choice) {
+            case 1:
+                manager.AddSchedule();
+                break;
+            case 2:
+                manager.DisplaySchedules();
+                break;
+            case 3:
+                {
+                    auto scheduleCount = manager.GetScheduleCount(); // Use a local variable to store the count
+                    if (scheduleCount == 0) {
+                        std::cout << "No schedules available to update.\n";
+                        break;
+                    }
+                    manager.DisplaySchedules();  // Show current schedules
+                    std::cout << "Enter index of the schedule to update (0 to " << (scheduleCount - 1) << "): ";
+                    std::cin >> index;
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // Clear input buffer
+
+                    if (index >= 0 && index < scheduleCount) {
+                        manager.UpdateSchedule(index);
+                    } else {
+                        std::cout << "Invalid index! Please try again.\n";
+                    }
+                }
+                break;
+            case 4:
+                {
+                    auto scheduleCount = manager.GetScheduleCount(); // Use a local variable to store the count
+                    if (scheduleCount == 0) {
+                        std::cout << "No schedules available to delete.\n";
+                        break;
+                    }
+                    manager.DisplaySchedules();  // Show current schedules
+                    std::cout << "Enter index of the schedule to delete (0 to " << (scheduleCount - 1) << "): ";
+                    std::cin >> index;
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // Clear input buffer
+
+                    if (index >= 0 && index < scheduleCount) {
+                        manager.DeleteSchedule(index);
+                    } else {
+                        std::cout << "Invalid index! Please try again.\n";
+                    }
+                }
+                break;
+            case 5:
+                std::cout << "Exiting...\n";
+                return 0;
+            default:
+                std::cout << "Invalid choice! Please try again.\n";
+        }
     }
-  }
 }

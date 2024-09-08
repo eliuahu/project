@@ -1,49 +1,107 @@
 #include "bus_schedule_manager.h"
 #include <iostream>
-#include <limits>
+#include <cstring>
 
-
-void BusScheduleManager::AddSchedule() {
-  BusSchedule new_schedule;
-  std::cin >> new_schedule;
-  schedules_.push_back(new_schedule);
-  std::cout << "New schedule added to the list!\n";
-}
-
-void BusScheduleManager::DisplaySchedules() const {
-  if (schedules_.empty()) {
-    std::cout << "No schedules available.\n";
-  } else {
-    for (size_t i = 0; i < schedules_.size(); ++i) {
-      std::cout << "Schedule " << i + 1 << ":\n";
-      schedules_[i].Display();
+// Constructor
+BusScheduleManager::BusScheduleManager()
+    : size_(0), capacity_(10) {
+    schedules_ = new BusSchedule*[capacity_];
+    for (int i = 0; i < capacity_; ++i) {
+        schedules_[i] = nullptr;
     }
-  }
 }
 
-void BusScheduleManager::UpdateSchedule() {
-  size_t index;
-  std::cout << "Enter the schedule number to update: ";
-  std::cin >> index;
-  std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
-
-  if (index < 1 || index > schedules_.size()) {
-    std::cout << "Invalid schedule number!\n";
-  } else {
-    schedules_[index - 1].UpdateSchedule();
-  }
+// Destructor
+BusScheduleManager::~BusScheduleManager() {
+    Clear();
 }
 
-void BusScheduleManager::DeleteSchedule() {
-  size_t index;
-  std::cout << "Enter the schedule number to delete: ";
-  std::cin >> index;
-  std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  
+// Copy constructor
+BusScheduleManager::BusScheduleManager(const BusScheduleManager& other) {
+    CopyFrom(other);
+}
 
-  if (index < 1 || index > schedules_.size()) {
-    std::cout << "Invalid schedule number!\n";
-  } else {
-    schedules_.erase(schedules_.begin() + index - 1);
-    std::cout << "Schedule deleted successfully!\n";
-  }
+// Assignment operator
+BusScheduleManager& BusScheduleManager::operator=(const BusScheduleManager& other) {
+    if (this != &other) {
+        Clear();
+        CopyFrom(other);
+    }
+    return *this;
+}
+
+// Resize the array of schedules
+void BusScheduleManager::Resize() {
+    capacity_ *= 2;
+    BusSchedule** new_schedules = new BusSchedule*[capacity_];
+    for (int i = 0; i < size_; ++i) {
+        new_schedules[i] = schedules_[i];
+    }
+    for (int i = size_; i < capacity_; ++i) {
+        new_schedules[i] = nullptr;
+    }
+    delete[] schedules_;
+    schedules_ = new_schedules;
+}
+
+// Copy resources from another BusScheduleManager
+void BusScheduleManager::CopyFrom(const BusScheduleManager& other) {
+    size_ = other.size_;
+    capacity_ = other.capacity_;
+    schedules_ = new BusSchedule*[capacity_];
+    for (int i = 0; i < size_; ++i) {
+        schedules_[i] = new BusSchedule(*other.schedules_[i]);
+    }
+    for (int i = size_; i < capacity_; ++i) {
+        schedules_[i] = nullptr;
+    }
+}
+
+// Clear the resources
+void BusScheduleManager::Clear() {
+    for (int i = 0; i < size_; ++i) {
+        delete schedules_[i];
+    }
+    delete[] schedules_;
+}
+
+// Add a new schedule
+void BusScheduleManager::AddSchedule() {
+    if (size_ == capacity_) {
+        Resize();
+    }
+
+    schedules_[size_] = new BusSchedule();
+    schedules_[size_]->AddSchedule();
+    ++size_;
+}
+
+// Update an existing schedule
+void BusScheduleManager::UpdateSchedule(int index) {
+    if (index >= 0 && index < size_) {
+        schedules_[index]->UpdateSchedule();
+    } else {
+        std::cout << "Error: Invalid index!\n";
+    }
+}
+
+// Delete a schedule
+void BusScheduleManager::DeleteSchedule(int index) {
+    if (index >= 0 && index < size_) {
+        delete schedules_[index];
+        for (int i = index; i < size_ - 1; ++i) {
+            schedules_[i] = schedules_[i + 1];
+        }
+        schedules_[size_ - 1] = nullptr;
+        --size_;
+    } else {
+        std::cout << "Error: Invalid index!\n";
+    }
+}
+
+// Display all schedules
+void BusScheduleManager::DisplaySchedules() const {
+    for (int i = 0; i < size_; ++i) {
+        schedules_[i]->Display();
+    }
 }
