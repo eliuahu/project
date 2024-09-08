@@ -22,12 +22,13 @@ public:
     void DeleteSchedule();
     void Display() const;
 
-    friend std::istream& operator>>(std::istream& in, BusSchedule& bus);
 
 private:
     std::string destination_;
     std::string bus_number_;
     std::string departure_time_;
+
+    friend std::istream& operator>>(std::istream& in, BusSchedule& bus);
 };
 
 #endif // BUS_SCHEDULE_H
