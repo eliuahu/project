@@ -1,6 +1,5 @@
 #include "bus_schedule_manager.h"
 #include <iostream>
-#include <cstring>
 
 // Constructor
 BusScheduleManager::BusScheduleManager()
@@ -56,8 +55,6 @@ void BusScheduleManager::Resize() {
     capacity_ = new_capacity;
 }
 
-
-
 // Copy resources from another BusScheduleManager
 void BusScheduleManager::CopyFrom(const BusScheduleManager& other) {
     size_ = other.size_;
@@ -66,6 +63,7 @@ void BusScheduleManager::CopyFrom(const BusScheduleManager& other) {
     for (int i = 0; i < size_; ++i) {
         schedules_[i] = new BusSchedule(*other.schedules_[i]);
     }
+    // Initialize remaining slots to nullptr
     for (int i = size_; i < capacity_; ++i) {
         schedules_[i] = nullptr;
     }
@@ -79,15 +77,14 @@ void BusScheduleManager::Clear() {
     delete[] schedules_;
 }
 
+// Add a new schedule
 void BusScheduleManager::AddSchedule() {
     if (size_ == capacity_) {
         Resize();
     }
 
     schedules_[size_] = new BusSchedule();
-
     schedules_[size_]->AddSchedule();
-
     ++size_;
 }
 
@@ -107,7 +104,7 @@ void BusScheduleManager::DeleteSchedule(int index) {
         for (int i = index; i < size_ - 1; ++i) {
             schedules_[i] = schedules_[i + 1];
         }
-        schedules_[size_ - 1] = nullptr;
+        schedules_[size_ - 1] = nullptr;  // Explicitly set the last element to nullptr
         --size_;
     } else {
         std::cout << "Error: Invalid index!\n";
