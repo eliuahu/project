@@ -42,10 +42,6 @@ void BusScheduleManager::Resize() {
         new_schedules[i] = schedules_[i];
     }
 
-    // Initialize the rest of the new array to nullptr
-    for (int i = size_; i < new_capacity; ++i) {
-        new_schedules[i] = nullptr;
-    }
 
     // Delete old array of pointers
     delete[] schedules_;
@@ -83,9 +79,11 @@ void BusScheduleManager::AddSchedule() {
         Resize();
     }
 
-    schedules_[size_] = new BusSchedule();
-    schedules_[size_]->AddSchedule();
-    ++size_;
+    if (size_ >= 0){
+      schedules_[size_] = new BusSchedule();
+      schedules_[size_]->AddSchedule();
+      ++size_;
+    }
 }
 
 // Update an existing schedule
