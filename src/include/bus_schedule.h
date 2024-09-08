@@ -1,29 +1,33 @@
-#pragma once
+#ifndef BUS_SCHEDULE_H
+#define BUS_SCHEDULE_H
 
-#include <iostream>
 #include <string>
+#include <iostream>
 
 class BusSchedule {
- private:
-  std::string destination_;
-  std::string bus_number_;
-  std::string departure_time_;
+public:
+    BusSchedule();
+    BusSchedule(const std::string& destination,
+                const std::string& bus_number,
+                const std::string& departure_time);
+    BusSchedule(const BusSchedule& other) = default;
+    BusSchedule& operator=(const BusSchedule& other) = default;
+    ~BusSchedule() = default; 
 
-  void InputDestination(std::string& field);
-  void InputBusNumber(std::string& field);
-  void InputDepartureTime(std::string& field);
+    void InputDestination(std::string& field) const;
+    void InputBusNumber(std::string& field) const;
+    void InputDepartureTime(std::string& field) const;
+    void AddSchedule();
+    void UpdateSchedule();
+    void DeleteSchedule();
+    void Display() const;
 
- public:
-  BusSchedule();
-  BusSchedule(const std::string& destination, const std::string& bus_number,
-              const std::string& departure_time);
-  BusSchedule(const BusSchedule& other);
-  ~BusSchedule();
+    friend std::istream& operator>>(std::istream& in, BusSchedule& bus);
 
-  void AddSchedule();
-  void UpdateSchedule();
-  void DeleteSchedule();
-  void Display() const;
-
-  friend std::istream& operator>>(std::istream& in, BusSchedule& bus);
+private:
+    std::string destination_;
+    std::string bus_number_;
+    std::string departure_time_;
 };
+
+#endif // BUS_SCHEDULE_H
